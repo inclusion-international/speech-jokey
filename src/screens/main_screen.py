@@ -211,6 +211,9 @@ class MainScreen(MDScreen):
             try:
                 # FIXME: Use constant or configurable output path
                 api.synthesize(self.ids.text_main.text, os.path.join('tmp', 'output_file.wav'))
+                popup_window = CustomPopup(content_text=" Succesfully generated audio file!",
+                                   size_hint=(None, None), size=(400, 200))
+                popup_window.open()
             except NotImplementedError:
                 msg = "Text to speech synthesis not implemented for this API."
                 log.error("%s: %s", self.__class__.__name__, msg)
