@@ -1,6 +1,78 @@
+#:kivy 2.3.0
+
 <ExampleAPIWidget>:
-    example_setting_input: example_setting_input
-    TextInput:
-        id: example_setting_input
-        text_hint: "Hello World!"
-        on_text_validate: root.save_settings
+    md_bg_color: self.theme_cls.secondaryContainerColor
+
+    MDBoxLayout:
+        orientation: "vertical"
+        MDTopAppBar:
+            type: "small"
+            pos_hint: {"center_x": .5, "top": 1}
+            MDTopAppBarLeadingButtonContainer:
+                spacing: "4dp"
+                padding: 40,0,0,5
+                MDActionTopAppBarButton:
+                    id: btn_back
+                    icon: "arrow-left"
+                    height: "56dp"
+                    on_release:
+                        root.manager.transition.direction = 'right'
+                        root.manager.current = "settings"
+            MDTopAppBarTitle:
+                text: root.title
+                pos_hint: {"center_x": .5, "center_y": .5}
+        MDDivider:
+            size_hint_x: 0.8
+            pos_hint: {"center_x": .5, "center_y": .5}
+        MDScrollView:
+            size_hint_x: 1
+            pos_hint: {"center_x": .5, "center_y": .5}
+            MDList:
+                id: settings_container
+                MDListItem:
+                    orientation: "horizontal"
+                    MDLabel:
+                        text: "Setting 1 (Checkbox)"
+                    MDCheckbox:
+                        id: setting_1
+                        on_state: root.on_change("setting_1")
+                MDListItem:
+                    orientation: "horizontal"
+                    MDLabel:
+                        text: "Setting 2 (Textfield)"
+                    MDTextField:
+                        mode: "outlined"
+                        id: setting_2
+                        on_text_validate: root.on_change("setting_2")
+                        MDTextFieldLeadingIcon:
+                            icon: "pencil"
+                        MDTextFieldHintText:
+                            text: "Enter your setting here"
+                        MDTextFieldHelperText:
+                            text: "This is an example setting input field"
+                            mode: "persistent"
+                        MDTextFieldTrailingIcon:
+                            icon: "alert-circle-outline"
+                            opacity: 0 # This icon is not visible but can be set to visible on error
+                        MDTextFieldMaxLengthText:
+                            max_text_length: 10 # Limit input length
+                MDListItem:
+                    orientation: "horizontal"
+                    MDLabel:
+                        text: "Setting 3 (Slider)"
+                    MDSlider:
+                        id: setting_3
+                        min: 0
+                        max: 100
+                        value: 50
+                        step: 1
+                        on_value: root.on_change("setting_3")
+                        MDSliderHandle:
+                        MDSliderValueLabel:
+                MDListItem:
+                    orientation: "horizontal"
+                    MDLabel:
+                        text: "Setting 4 (Switch)"
+                    MDSwitch:
+                        id: setting_4
+                        on_active: root.on_change("setting_4")
