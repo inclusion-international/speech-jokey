@@ -1,26 +1,58 @@
-<ElevenLabsWidget>:
-    orientation: 'vertical'
+<ElevenLabsAPIWidget>:
+    md_bg_color: self.theme_cls.secondaryContainerColor
+
     api_key_input: api_key_input
     voice_selection: voice_name_spinner
     model_selection: model_spinner
-    
-    Label:
-        text: 'ElevenLabs API Key:'
-    TextInput:
-        id: api_key_input
-        text: ''
-        multiline: False
 
-    Label:
-        text: 'Voice Name:'
-    Spinner:
-        id: voice_name_spinner
-        text: root.voice_names[0] if root.voice_names else 'No voices available'
-        values: root.voice_names
-
-    Label:
-        text: 'Model:'
-    Spinner:
-        id: model_spinner
-        text: root.model_names[0] if root.model_names else 'No models available'
-        values: root.model_names
+    MDBoxLayout:
+        orientation: "vertical"
+        MDTopAppBar:
+            type: "small"
+            pos_hint: {"center_x": .5, "top": 1}
+            MDTopAppBarLeadingButtonContainer:
+                spacing: "4dp"
+                padding: "4dp"
+                MDActionTopAppBarButton:
+                    id: btn_back
+                    icon: "arrow-left"
+                    on_release:
+                        root.manager.transition.direction = 'right'
+                        root.manager.current = "settings"
+            MDTopAppBarTitle:
+                text: root.title
+                pos_hint: {"center_x": .5, "center_y": .5}
+        MDDivider:
+            size_hint_x: 0.8
+            pos_hint: {"center_x": .5, "center_y": .5}
+        MDScrollView:
+            adaptive_height: True
+            size_hint_x: 1
+            pos_hint: {"center_x": .5, "center_y": .5}
+            MDList:
+                id: settings_container
+                MDListItem:
+                    MDLabel:
+                        text: 'ElevenLabs API Key:'
+                    MDTextField:
+                        id: api_key_input
+                        MDTextFieldHintText:
+                            text: 'Enter API Key'
+                        MDTextFieldHelperText:
+                            text: 'API key from your ElevenLabs account'
+                        MDTextFieldMaxLengthText:
+                            max_text_length: 32
+                MDListItem:
+                    MDLabel:
+                        text: 'Voice Name:'
+                    Spinner:
+                        id: voice_name_spinner
+                        text: root.get_current_voice() if root.get_current_voice() else 'No voices available'
+                        values: root.voice_names
+                MDListItem:
+                    MDLabel:
+                        text: 'Model:'
+                    Spinner:
+                        id: model_spinner
+                        text: root.model_names[0] if root.model_names else 'No models available'
+                        values: root.model_names

@@ -1,10 +1,7 @@
-name: Windows Build
+name: Windows Build on Push to main
 
 on:
   push:
-    branches:
-      - main
-  pull_request:
     branches:
       - main
 
@@ -16,9 +13,13 @@ jobs:
       packages: write
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
       with:
-        fetch-depth: 0
+        sparse-checkout: |
+          .github
+          src
+          pyproject.toml
+          poetry.lock
 
     - name: Execute script to .exe in Windows
       run: ".github/scripts/windows/build_exe_onefile.ps1"
