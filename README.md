@@ -1,11 +1,11 @@
 # Speech Jokey
 
-This project is about building an application which synthesises speech from user-provided text. The application is written in Python and uses the [Kivy](https://kivy.org/#home) framework for the user interface.
+This project is about building an application which synthesizes speech from user-provided text. The application is written in Python and uses the [Kivy](https://kivy.org/#home) framework for the user interface.
 
-Encoding intonation and emotions remains a significant challenge in the Assistive Technology Text-To-Speach field, which if overcome could definitely enhance the communication experience for people with speech impairment. The aim of Speech Jokey is therefore to allow people with communication difficulties to interact with more intonation, emotions and emphasis pauses. 
+Implementing intonations and emotions is still a significant challenge in the Assistive Technology applications of Text-To-Speech, but it would definitely enhance the communication experience for people with speech impairment. The aim of Speech Jokey is therefore to allow people with communication difficulties to interact with more intonation, emotions and emphasis pauses. 
 In addition, the application is specifically designed to be used with eye tracking systems, facilitating the positioning of the cursor between lines and words of a text.  
 
-We envision the application to be used as a means to become DJ of your preferred voice, hence the name speech jokey. With the application you'll be creating synthesized speech from your own provided text.
+Like a DJ, this application allows you to create your own text with impressive emotions, different intonations and meaningful pauses as voice output just the way you like it, which explains the name Speech Jokey.
 
 The designed logo for the application is currently: 
 
@@ -14,19 +14,20 @@ The designed logo for the application is currently:
 A [video showcase](https://github.com/HackXIt/assist-heidi-speech-jokey/blob/f180d5f0ac2c26254804e884c03c75cedc8ba890/doc/SpeechJokey_PreRelease-Development_Showcase.mp4) of the current project state of the running application can be found in the `/doc` folder.
 
 ## Speech synthesis
-Speech synthesis is done using various speech synthesis engines. The application currently supports the following speech synthesis engines:
+The application currently supports the following speech synthesis engines:
 * ElevenLabs API
 
 # Project setup
 The project is based on Python `3.11`, but it also supports lower version down to `3.9`. To install Python, follow the instructions on the [Python website](https://www.python.org/downloads/).
 
 ## Install dependencies
-We use poetry for dependency management. To install poetry, run:
+We use poetry for dependency management. To install poetry, please check their [installation instructions](https://python-poetry.org/docs/main/#installing-with-the-official-installer). Or simply install it by running:
+
 ```
 pip install poetry
 ```
 
-Make sure to configure poetry to install the virtual environment in the project root. This can be done by running:
+Then make sure to configure poetry to install the virtual environment in the project root. This can be done by running:
 ```
 poetry config virtualenvs.in-project true
 ```
@@ -45,13 +46,31 @@ Installing the virtual environment is done by running:
 poetry install --no-root
 ```
 
-## Managing Dependencies
+## Installing ffmpeg
+To be able to generate and play audio files with the ElevenLabs API you additionally need the multimedia framework FFmpeg.
+
+### Windows
+To install it on Windows, follow the instructions on [this website](https://phoenixnap.com/kb/ffmpeg-windows). This includes downloading the source Code and adding ffmpeg to the Path variable.
+
+After updating the Path variable it is important to restart your IDE (e.g. PyCharm or VSCode). 
+
+### Mac/OS
+To install it on Mac/OS, follow the instructions on [this website](https://phoenixnap.com/kb/ffmpeg-mac).
+
+[comment]: <> (Have to try that!)
+
+### Linux/Ubuntu
+To install it on Linux/Ubuntu, follow the instructions on [this website](https://phoenixnap.com/kb/install-ffmpeg-ubuntu).
+
+[comment]: <> (Have to try that!)
+
+# Managing Dependencies
 The dependencies are listed in the [pyproject.toml](pyproject.toml) file. To add a new dependency, run:
 ```
 poetry add <dependency>
 ```
 
-# Project build
+# Project building
 The following procedures assume that you have installed the dependencies and that you are working inside the virtual environment.
 
 ## Running the application (Any OS / Development)
@@ -59,6 +78,8 @@ To run the application, execute the following command in the root of the project
 ```
 poetry run python src/main.py
 ```
+
+[comment]: <> (Maybe add description on how to run it by selecting the main.py and running it with Pycharm)
 
 ## Building the application executable (Windows / Local Development)
 To build the application, execute the following command in the root of the project:
@@ -96,7 +117,8 @@ poetry run pyinstaller SpeechJokey.spec
 
 This is what the application currently looks like.
 
-![74a5821a-faea-4734-90e4-1d00d71938d4](https://github.com/HackXIt/assist-heidi-speech-jokey/assets/1595680/8ed7a97f-fad1-41ac-bdb4-049549a0f0ba)
+![picture of application](./doc/picture%20of%20application.png)
+
 
 Some of the screenshots following this are a little different, but hopefully they get the concept across for others to contribute.
 
