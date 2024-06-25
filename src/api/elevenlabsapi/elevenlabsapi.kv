@@ -12,10 +12,11 @@
             pos_hint: {"center_x": .5, "top": 1}
             MDTopAppBarLeadingButtonContainer:
                 spacing: "4dp"
-                padding: "4dp"
+                padding: 40,0,0,5
                 MDActionTopAppBarButton:
                     id: btn_back
                     icon: "arrow-left"
+                    height: "56dp"
                     on_release:
                         root.manager.transition.direction = 'right'
                         root.manager.current = "settings"
@@ -32,25 +33,41 @@
             MDList:
                 id: settings_container
                 MDListItem:
-                    MDLabel:
+                    height: "120dp"
+                    MDListItemLeadingIcon:
+                        icon: "key-variant"
+                        pos_hint: {"center_x": .5, "center_y": .5}
+                    MDListItemHeadlineText:
                         text: 'ElevenLabs API Key:'
+                    MDListItemSupportingText:
+                        text: "API key from your ElevenLabs account"
                     MDTextField:
                         id: api_key_input
+                        size_hint_x: 1
+                        pos_hint: {"center_x": .5, "center_y": .5}
                         MDTextFieldHintText:
                             text: 'Enter API Key'
-                        MDTextFieldHelperText:
-                            text: 'API key from your ElevenLabs account'
                         MDTextFieldMaxLengthText:
                             max_text_length: 32
                 MDListItem:
-                    MDLabel:
-                        text: 'Voice Name:'
+                    height: "120dp"
+                    MDListItemLeadingIcon:
+                        icon: "account-voice"
+                        pos_hint: {"center_x": .5, "center_y": .5}
+                    MDListItemHeadlineText:
+                        text: 'Voice:'
+                    MDListItemSupportingText:
+                        text: "Select the voice that you want to use."
                     Spinner:
                         id: voice_name_spinner
                         text: root.get_current_voice() if root.get_current_voice() else 'No voices available'
                         values: root.voice_names
                 MDListItem:
-                    MDLabel:
+                    height: "120dp"
+                    MDListItemLeadingIcon:
+                        icon: "account-cog"
+                        pos_hint: {"center_x": .5, "center_y": .5}
+                    MDListItemHeadlineText:
                         text: 'Model:'
                     Spinner:
                         id: model_spinner

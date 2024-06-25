@@ -10,10 +10,11 @@
             pos_hint: {"center_x": .5, "top": 1}
             MDTopAppBarLeadingButtonContainer:
                 spacing: "4dp"
-                padding: "4dp"
+                padding: 40,0,0,5
                 MDActionTopAppBarButton:
                     id: btn_back
                     icon: "arrow-left"
+                    height: "56dp"
                     on_release:
                         root.manager.transition.direction = 'right'
                         root.manager.current = "settings"

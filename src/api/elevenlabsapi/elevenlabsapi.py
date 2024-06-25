@@ -246,7 +246,7 @@ class ElevenLabsAPI():
                 audio = AudioSegment.from_file(audio_path, format="mp4")
             pyplay(audio)
 
-    def save(): 
+    def save(self):
         """
         now you can choose where to save the file .
         """

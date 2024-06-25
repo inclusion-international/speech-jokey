@@ -28,10 +28,11 @@ class Settings(MDScreen):
                 try:
                     self.manager.add_widget(api.settings.widget)
                     button = MDButton(
-                        MDButtonIcon(icon="chevron-right", pos_hint={"x": 0.01, "center_y": 0.5}),
+                        MDButtonIcon(icon="chevron-right", pos_hint={"x": 0.05, "center_y": 0.5}),
                         MDButtonText(text=api.settings.widget.title),  # <--- text is VALID here
                         style="text",
-                        pos_hint={"x": .01}
+                        pos_hint={"x": .01},
+                        height="56dp"
                     )
                     # button.add_widget(MDButtonIcon(icon="chevron-right", pos_hint={"center_x": 0.5, "center_y": 0.5}))   # Dreieckspfeil auf Button
                     # button.add_widget(MDButtonText(text=api.settings.widget.title))                     # Text auf Button
