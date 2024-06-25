@@ -21,12 +21,13 @@ Speech synthesis is done using various speech synthesis engines. The application
 The project is based on Python `3.11`, but it also supports lower version down to `3.9`. To install Python, follow the instructions on the [Python website](https://www.python.org/downloads/).
 
 ## Install dependencies
-We use poetry for dependency management. To install poetry, run:
+We use poetry for dependency management. To install poetry, please check their [installation instructions](https://python-poetry.org/docs/main/#installing-with-the-official-installer). Or simply install it by running:
+
 ```
 pip install poetry
 ```
 
-Make sure to configure poetry to install the virtual environment in the project root. This can be done by running:
+Then make sure to configure poetry to install the virtual environment in the project root. This can be done by running:
 ```
 poetry config virtualenvs.in-project true
 ```
@@ -45,6 +46,24 @@ Installing the virtual environment is done by running:
 poetry install --no-root
 ```
 
+## Installing ffmpeg
+To be able to generate and play audio files with the ElevenLabs API you additionally need the multimedia framework FFmpeg.
+
+### Windows
+To install it on Windows, follow the instructions on [this website](https://phoenixnap.com/kb/ffmpeg-windows). This includes downloading the source Code and adding ffmpeg to the Path variable.
+
+After updating the Path variable it is important to restart your IDE (e.g. PyCharm or VSCode). 
+
+### Mac/OS
+To install it on Mac/OS, follow the instructions on [this website](https://phoenixnap.com/kb/ffmpeg-mac).
+
+[comment]: <> (Have to try that!)
+
+### Linux/Ubuntu
+To install it on Linux/Ubuntu, follow the instructions on [this website](https://phoenixnap.com/kb/install-ffmpeg-ubuntu).
+
+[comment]: <> (Have to try that!)
+
 ## Managing Dependencies
 The dependencies are listed in the [pyproject.toml](pyproject.toml) file. To add a new dependency, run:
 ```
@@ -59,6 +78,8 @@ To run the application, execute the following command in the root of the project
 ```
 poetry run python src/main.py
 ```
+
+[comment]: <> (Maybe add description on how to run it by selecting the main.py and running it with Pycharm)
 
 ## Building the application executable (Windows / Local Development)
 To build the application, execute the following command in the root of the project:
@@ -96,7 +117,8 @@ poetry run pyinstaller SpeechJokey.spec
 
 This is what the application currently looks like.
 
-![74a5821a-faea-4734-90e4-1d00d71938d4](https://github.com/HackXIt/assist-heidi-speech-jokey/assets/1595680/8ed7a97f-fad1-41ac-bdb4-049549a0f0ba)
+![picture of application](./doc/picture%20of%20application.png)
+
 
 Some of the screenshots following this are a little different, but hopefully they get the concept across for others to contribute.
 
