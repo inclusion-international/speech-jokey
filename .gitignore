@@ -5,6 +5,9 @@ app_settings.json
 speech-jokey.png
 !.github/static/**
 
+# ffmpeg
+ffmpeg
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
