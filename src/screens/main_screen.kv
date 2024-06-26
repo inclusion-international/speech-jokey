@@ -1,0 +1,152 @@
+#:kivy 2.3.0
+
+<MainScreen>:
+    md_bg_color: self.theme_cls.secondaryContainerColor
+
+    MDBoxLayout:
+        orientation: 'vertical'
+
+        MDTopAppBar:
+            type: "small"
+            size_hint_y: .3
+            pos_hint: {"center_x": .5, "center_y": .5}
+
+            MDTopAppBarLeadingButtonContainer:
+                spacing: "15dp"
+                padding: 40,0,0,10
+                MDActionTopAppBarButton:
+                    id: btn_menu
+                    icon: "menu"
+                    height: "56dp"
+                    on_release: root.on_menu_open()
+
+                MDButton:
+                    pos_hint: {"center_x": .5, "center_y": .5}
+                    id: btn_select_voice
+                    style: "elevated"
+                    height: "80dp"
+                    on_release: root.on_select_voice()
+
+                    MDButtonIcon:
+                        icon: "account-voice"
+                        theme_icon_color: "Custom"
+                        icon_color: self.theme_cls.onPrimaryContainerColor
+                    MDButtonText:
+                        text: "current voice: \n    " + root.selected_voice
+                        theme_text_color: "Custom"
+                        text_color: self.theme_cls.onPrimaryContainerColor
+
+            MDTopAppBarTitle:
+                text: root.title
+                pos_hint: {"center_x": .5, "center_y": .5}
+
+            MDTopAppBarTrailingButtonContainer:
+                spacing: "15dp"
+                padding: 0,0,40,10
+                MDFabButton:
+                    id: btn_load
+                    icon: "file-upload"
+                    style: "large"
+                    on_release: root.on_load_file()
+                MDFabButton:
+                    id: btn_save
+                    icon: "content-save"
+                    style: "large"
+                    on_release: root.on_save_file()
+
+
+
+        MDScrollView:
+            adaptive_height: True
+            MDTextField:
+                id: text_main
+                mode: "filled"
+                multiline: True
+                size_hint_y: None
+                adaptive_height: True
+                #new:
+                on_cursor: root.on_cursor_control()
+
+        MDBoxLayout:
+            adaptive_size: True
+            orientation: 'horizontal'
+            MDIcon:
+                icon: "information-outline"
+            MDLabel:
+                adaptive_width: True
+                id: label_status
+                text: "developmental state"
+
+        MDTopAppBar:
+            type: "small"
+            size_hint_y: .3
+            pos_hint: {"center_x": .5, "center_y": .5, "bottom": 1}
+
+            MDTopAppBarLeadingButtonContainer:
+                spacing: "15dp"
+                padding: 80,0,0,10
+
+                MDFabButton:
+                    id: btn_cursor_left
+                    icon: "arrow-left-bold-box-outline"
+                    style: "large"
+                    on_release: root.on_cursor_left()
+                MDFabButton:
+                    id: btn_cursor_right
+                    icon: "arrow-right-bold-box-outline"
+                    style: "large"
+                    on_release: root.on_cursor_right()
+
+            MDTopAppBarTitle:
+                text: " "
+                pos_hint: {"center_x": .5, "center_y": .5}
+
+            MDTopAppBarTrailingButtonContainer:
+                spacing: "15dp"
+                padding: 0,0,80,10
+
+                MDFabButton:
+                    id: btn_play
+                    icon: "play-circle"
+                    style: "large"
+                    on_press: root.on_play()
+                MDFabButton:
+                    id: btn_synthesize
+                    icon: "file-music"
+                    style: "large"
+                    on_press: root.on_synthesize()
+
+
+<Popups>:
+    Label:
+        text: "You selected the voice: " + root.voice_name
+        halign: 'center'
+        font_size: '20sp'
+        color: 1, 1, 1, 1
+        size_hint: 0.6, 0.2
+        pos_hint: {"x":0.2, "top":1}
+
+<CustomPopup>:
+    title: ""
+    separator_height: 0
+    size_hint: 0.8, 0.4
+    background_color: (0,0,0,0)
+
+    BoxLayout:
+        orientation: "vertical"
+        padding: 0, 10, 10, 10
+        spacing: 10 
+        border: 50
+        border_color: (1,1,1,1)
+        canvas.before:
+            Color:
+                rgba:(255/255,255/255,255/255,1)
+
+            RoundedRectangle:
+                pos: self.pos
+                size: self.size
+                radius: [40]
+        Label:
+            text: root.content_text
+            color: 0,0,0,1
+            font_size: 25
