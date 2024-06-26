@@ -230,7 +230,9 @@ class MainScreen(MDScreen):
                 msg = "Error during synthesis"
                 log.error("%s: %s: %s", self.__class__.__name__, msg, e)
                 self.ids.label_status.text = msg
-
+        popup_window = CustomPopup(content_text=f"Text has been synthesized\nto an audio file",
+                                   size_hint=(None, None), size=(400, 400))
+        popup_window.open()
     def on_cursor_control(self):
         new_cursor_index = self.ids.text_main.cursor_index()
         old_cursor_index = self.old_cursor_index
