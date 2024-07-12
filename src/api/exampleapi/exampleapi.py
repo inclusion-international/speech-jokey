@@ -13,8 +13,6 @@ from kivymd.uix.selectioncontrol import MDSwitch
 # new
 import os
 from pathlib import Path
-from pydub import AudioSegment          # TODO: add pydub to dependencies
-from pydub.playback import play
 
 # Custom
 from ..base import BaseApiSettings, BaseApi
@@ -141,24 +139,6 @@ class ExampleAPI(BaseApi):
         # NOTE If you go with the second design pattern, you would access settings directly through the middleware: self.settings.<setting>
 
         # NOTE Any API specific initialization code can be placed here
-
-    # Implement abstract methods of BaseApi
-    def play(self, input: str):
-        """
-        method plays audio file, that is saved in the 'tmp' folder.
-        """
-        print("playing...")
-        # Placeholder implementation
-        src_path = str(Path(os.path.dirname(__file__)).parents[2])
-        tmp_path = os.path.join(src_path, 'tmp')
-        # print(tmp_path)
-        if len(os.listdir(tmp_path)) == 0:
-            print("Directory is empty. Press generate first!")
-        else:
-            audio_path = os.path.join(tmp_path, 'sample-3s.wav')        # name of your audio file
-            # print(audio_path)
-            audio = AudioSegment.from_wav(audio_path)
-            play(audio)
 
     def synthesize(self, input: str, file: str):
         print("synthesizing...")

@@ -11,14 +11,10 @@ from kivy.app import App
 from kivy.properties import StringProperty, ListProperty, ObjectProperty
 from kivy.logger import Logger as log
 from kivymd.uix.screen import MDScreen
-from pathlib import Path
 from typing import Iterator, List
-from ..base import BaseApiSettings
-import os
+from ..base import BaseApiSettings, BaseApi
 from kivy.uix.button import Button
 from kivy.uix.dropdown import DropDown
-from pydub import AudioSegment
-from pydub.playback import play as pyplay
 
 class ElevenLabsAPIWidget(MDScreen):
     settings = ObjectProperty(None)
@@ -134,13 +130,14 @@ class ElevenLabsAPISettings(BaseApiSettings):
         self.voice_text=self.widget.voice_selection.text
         #self.save_settings()
 
-class ElevenLabsAPI():
+class ElevenLabsAPI(BaseApi):
     _models = [
         "eleven_multilingual_v2",
         "eleven_monolingual_v1"
     ]
 
     def __init__(self, settings: ElevenLabsAPISettings = None):
+        super(ElevenLabsAPI, self).__init__(settings)
         logging.debug("Initializing ElevenLabsAPI instance...")
         self.settings = settings
         self.init_api()
@@ -225,27 +222,6 @@ class ElevenLabsAPI():
         else:
             save(audio, out_filename)
 
-    def play(self, input: str):
-        """
-        method plays audio file, that is saved in the 'tmp' folder.
-        """
-        print("playing...")
-        # Placeholder implementation
-        src_path = str(Path(os.path.dirname(__file__)).parents[2])
-        tmp_path = os.path.join(src_path, 'tmp')
-        print(tmp_path)
-        if len(os.listdir(tmp_path)) == 0:
-            print("Directory is empty. Press generate first!")
-        else:
-            # name of your audio file
-            audio_path = os.path.join(tmp_path, 'output_file.wav')
-            print(audio_path)
-            try:
-                audio = AudioSegment.from_file(audio_path, "mp3")
-            except:
-                audio = AudioSegment.from_file(audio_path, format="mp4")
-            pyplay(audio)
-
     def save(self):
         """
         now you can choose where to save the file .
@@ -300,3 +276,5 @@ if __name__ == "__main__":
 
     Serena the AI voice
     """, out_filename=args.filename)
+
+    tts.play()

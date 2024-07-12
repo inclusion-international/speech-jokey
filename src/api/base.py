@@ -1,6 +1,20 @@
 from abc import ABC, abstractmethod
 from kivy.event import EventDispatcher
 from kivy.clock import Clock
+import os
+from pathlib import Path
+import logging
+
+try:
+    import io
+
+    import sounddevice as sd  # type: ignore
+    import soundfile as sf  # type: ignore
+except ModuleNotFoundError:
+    message = (
+        "`pip install sounddevice soundfile numpy` required` "
+    )
+    raise ValueError(message)
 
 class BaseApiSettings(ABC, EventDispatcher):
     _instance = None
@@ -62,15 +76,28 @@ class BaseApi(ABC, EventDispatcher):
         super(BaseApi, self).__init__(**kwargs)
         self.settings = settings
 
-    @abstractmethod
-    def play(self, input: str):
+    def play(self, audio_file_name="output_file.wav"):
         """
-        This method must be overridden in derived classes.
-        It should play the audio from the API.
+        This method plays the given audio_file_name in the tmp folder.
 
-        If the API does not support audio playback, it should raise a NotImplementedError.
+        Only override it, if you need a special playback.
         """
-        pass
+        # Placeholder implementation
+        src_path = str(Path(os.path.dirname(__file__)).parents[1])
+        tmp_path = os.path.join(src_path, 'tmp')
+        if len(os.listdir(tmp_path)) == 0:
+            logging.error("Directory is empty. Press generate first!")
+        else:
+            # name of your audio file
+            audio_path = os.path.join(tmp_path, audio_file_name)
+            logging.info("Playing audio file %s",audio_path)
+            logging.info("file exists %s",os.path.exists(audio_path))
+            try:
+                data, fs = sf.read(audio_path)
+                sd.play(data, fs)
+                # don't call sd.wait() as we want the playback in the background.
+            except Exception as error:
+                logging.error("Could not play audio file: %s, reason: %s", audio_path,error)
 
     @abstractmethod
     def synthesize(self, input: str, file: str):

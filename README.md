@@ -50,24 +50,6 @@ Installing the virtual environment is done by running:
 poetry install --no-root
 ```
 
-## Installing ffmpeg
-To be able to generate and play audio files with the ElevenLabs API you additionally need the multimedia framework FFmpeg.
-
-### Windows
-To install it on Windows, follow the instructions on [this website](https://phoenixnap.com/kb/ffmpeg-windows). This includes downloading the source Code and adding ffmpeg to the Path variable.
-
-After updating the Path variable it is important to restart your IDE (e.g. PyCharm or VSCode). 
-
-### Mac/OS
-To install it on Mac/OS, follow the instructions on [this website](https://phoenixnap.com/kb/ffmpeg-mac).
-
-[comment]: <> (Have to try that!)
-
-### Linux/Ubuntu
-To install it on Linux/Ubuntu, follow the instructions on [this website](https://phoenixnap.com/kb/install-ffmpeg-ubuntu).
-
-[comment]: <> (Have to try that!)
-
 # Managing Dependencies
 The dependencies are listed in the [pyproject.toml](pyproject.toml) file. To add a new dependency, run:
 ```

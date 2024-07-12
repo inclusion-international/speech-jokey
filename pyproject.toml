@@ -20,9 +20,10 @@ buildozer = "^1.5.0"
 pyinstaller = "^5.6.2"
 elevenlabs = "^0.2.26"
 kivymd = {url = "https://github.com/kivymd/KivyMD/archive/5fb6654a83ffa1a20bd9c617be17986cc2e0778b.zip"}
-pydub = "^0.25.1"
 python-dotenv = "^1.0.1"
-pyaudio = "^0.2.14"
+soundfile = "*"
+sounddevice = "*"
+numpy = "*"
 
 [build-system]
 requires = ["poetry-core"]
