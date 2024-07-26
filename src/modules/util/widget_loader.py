@@ -7,4 +7,4 @@ def load_widget(kv_file_path: str = None):
         Builder.unload_file(kv_file_path)
         Builder.load_file(kv_file_path)
     else:
-        raise ValueError("Invalid kv file path provided: {kv_file_path}")
+        raise ValueError(f"Invalid kv file path provided: {kv_file_path}")

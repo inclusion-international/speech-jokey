@@ -21,16 +21,24 @@ def none_settings():
 
 class GlobalSettings(EventDispatcher):
     _instance = None
-    _settings_file = "app_settings.json"
+    _settings_file_name="app_settings.json"
+    _settings_file = _settings_file_name
     _default_settings = {}
+    _app_dir="."
+    _tmp_dir="."
 
-    def __new__(cls):
+    def __new__(cls, app_dir, tmp_dir):
         if cls._instance is None:
             cls._instance = super(GlobalSettings, cls).__new__(cls)
-            cls._instance.load_or_initialize_settings()
         return cls._instance
 
-    def load_or_initialize_settings(self):
+    def __init__(self, app_dir, tmp_dir):
+        self._instance.load_or_initialize_settings(app_dir, tmp_dir)
+
+    def load_or_initialize_settings(self, app_dir, tmp_dir):
+        self._app_dir=app_dir
+        self._tmp_dir=tmp_dir
+        self._settings_file=os.path.join(self._app_dir,self._settings_file_name)
         if not os.path.exists(self._settings_file):
             self.reset()
         else:
@@ -67,3 +75,11 @@ class GlobalSettings(EventDispatcher):
     def reset(self):
         self._settings = self._default_settings.copy()
         self.save_settings()
+
+    def get_app_dir(self):
+        """Return the app directory (base directory) of the program."""
+        return self._app_dir
+
+    def get_tmp_dir(self):
+        """Return the tmp directory of the program."""
+        return self._tmp_dir
