@@ -1,0 +1,59 @@
+# -*- mode: python ; coding: utf-8 -*-
+
+# Spec-File for Linux: pyinstaller 6.x did not work, so use version 5.x
+# glew and sdl2 specifics not needed.
+
+from kivymd import hooks_path as kivymd_hooks_path
+app_name = 'SpeechJokey'
+
+block_cipher = None
+
+path = os.path.abspath(".")
+
+a = Analysis(
+    ['src/main.py'],
+    pathex=[path],
+    binaries=[],
+    datas=[],
+    hiddenimports=['pkg_resources.extern', 'kivymd.icon_definitions', 'elevenlabs'],
+    hookspath=[kivymd_hooks_path],
+    hooksconfig={},
+    runtime_hooks=[],
+    excludes=[],
+    win_no_prefer_redirects=False,
+    win_private_assemblies=False,
+    cipher=block_cipher,
+    noarchive=False,
+)
+pyz = PYZ(a.pure, a.zipped_data, cipher=block_cipher)
+
+exe = EXE(
+    pyz,
+    a.scripts,
+    [],
+    exclude_binaries=True,
+    name=app_name,
+    debug=False,
+    bootloader_ignore_signals=False,
+    strip=False,
+    upx=True,
+    console=True,
+    disable_windowed_traceback=False,
+    argv_emulation=False,
+    target_arch=None,
+    codesign_identity=None,
+    entitlements_file=None,
+    icon=['speech-jokey.ico'],
+)
+coll = COLLECT(
+    exe,
+    Tree('src/'),
+    a.scripts,
+    a.binaries,
+    a.zipfiles,
+    a.datas,
+    strip=False,
+    upx=True,
+    upx_exclude=[],
+    name=app_name,
+)

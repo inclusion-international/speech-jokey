@@ -217,11 +217,14 @@ class MainScreen(MDScreen):
     def on_synthesize(self):
         # TODO Implement text to speech synthesis (this is mostly a placeholder without a backend implementation yet)
         api = App.get_running_app().api
-        print(api)
+        tmp_dir = App.get_running_app().global_settings.get_tmp_dir()
+        synthesized_file = os.path.join(tmp_dir, 'output_file.wav')
+        log.info(f"Using synthesized_file={synthesized_file}")
+
         if api:
             try:
                 # FIXME: Use constant or configurable output path
-                api.synthesize(self.ids.text_main.text, os.path.join('tmp', 'output_file.wav'))
+                api.synthesize(self.ids.text_main.text, synthesized_file)
             except NotImplementedError:
                 msg = "Text to speech synthesis not implemented for this API."
                 log.error("%s: %s", self.__class__.__name__, msg)

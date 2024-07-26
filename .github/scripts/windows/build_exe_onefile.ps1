@@ -32,7 +32,7 @@ $Target = 'SpeechJokey'
 $TargetSpecFile = "$Target.spec"
 
 # Copy SpeechJokey.spec from .github/static to the current directory
-Copy-Item ".github/static/$TargetSpecFile" -Destination "."
+Copy-Item ".github/static/$TargetSpecFile.windows" -Destination "./$TargetSpecFile"
 Copy-Item ".github/static/speech-jokey.ico" -Destination "."
 
 # Remove null bytes from spec file (PyInstaller compatibility issue)
@@ -43,8 +43,8 @@ Write-Output 'INFO: Building executable with PyInstaller'
 poetry run pyinstaller $TargetSpecFile --log-level=ERROR --clean --noconfirm
 
 # Check for build success and output location
-if (Test-Path "dist\$Target.exe") {
-    Write-Output "INFO: Build successful. Executable located in dist\$Target.exe"
+if (Test-Path "dist\$Target") {
+    Write-Output "INFO: Build successful. Executable located in dist\$Target"
 } else {
     Write-Output 'ERROR: Build failed.'
     exit 1

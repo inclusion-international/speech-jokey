@@ -11,6 +11,7 @@ from kivymd.uix.list import MDListItemTrailingIcon
 # stdlib
 import os
 import sys
+from pathlib import Path
 # Custom
 from screens.about import About
 from screens.settings import Settings
@@ -20,10 +21,17 @@ from modules.util.widget_loader import load_widget
 from settings.app_settings import GlobalSettings
 from api.api_factory import load_apis
 
-# FIXME This folder shall always be created in the location of the executable, but currently will always be created in the current working directory
-# NOTE Need to differentiate launch environment (Release vs. Debug) - where one gets executed via python, the other via deployed executable
-TMP_FOLDER = 'tmp'
+APP_DIR = Path(__file__)
+print(f"APP_DIR={APP_DIR}")
 
+if getattr(sys, 'frozen', False) and hasattr(sys, '_MEIPASS'):
+    log.info('running in a PyInstaller bundle')
+    APP_DIR=Path(__file__).parent
+else:
+    log.info('running in a normal Python process')
+    APP_DIR=Path(__file__).parent.parent
+
+TMP_DIR = APP_DIR / 'tmp'
 
 class SpeechJokey(MDApp):
     def build(self):
@@ -45,7 +53,7 @@ class SpeechJokey(MDApp):
         #     "settings": Settings(title="Settings", name="settings"),
         #     "about": About(title="About", name="about")
         # }
-        self.global_settings = GlobalSettings()
+        self.global_settings = GlobalSettings(APP_DIR, TMP_DIR)
         self.icon = os.path.join(os.curdir, 'speech-jokey.ico')
         Config.set('kivy', 'window_icon', self.icon)
         log.setLevel(LOG_LEVELS["debug"])
@@ -62,5 +70,7 @@ class SpeechJokey(MDApp):
 if __name__ == '__main__':
     if hasattr(sys, '_MEIPASS'):
         resource_add_path(os.path.join(sys._MEIPASS))
-    os.makedirs(TMP_FOLDER, exist_ok=True) # This should fix it permanently
+    log.info(f"Using APP_DIR={APP_DIR}")
+    log.info(f"Using TMP_DIR={TMP_DIR}")
+    os.makedirs(TMP_DIR, exist_ok=True) # This should fix it permanently
     SpeechJokey(kv_file="SpeechJokey.kv").run()

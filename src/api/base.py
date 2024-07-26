@@ -1,9 +1,13 @@
 from abc import ABC, abstractmethod
 from kivy.event import EventDispatcher
 from kivy.clock import Clock
+from kivy.app import App
+
 import os
-from pathlib import Path
 import logging
+import queue
+import sys
+import threading
 
 try:
     import io
@@ -12,7 +16,7 @@ try:
     import soundfile as sf  # type: ignore
 except ModuleNotFoundError:
     message = (
-        "`pip install sounddevice soundfile numpy` required` "
+        "`pip install sounddevice soundfile` required` "
     )
     raise ValueError(message)
 
@@ -65,6 +69,8 @@ class BaseApiSettings(ABC, EventDispatcher):
 
 class BaseApi(ABC, EventDispatcher):
     _instance = None
+    buffersize = 2
+    blocksize = 2048
 
     @classmethod
     def __new__(cls, *args, **kwargs):
@@ -75,6 +81,8 @@ class BaseApi(ABC, EventDispatcher):
     def __init__(self, settings: BaseApiSettings, **kwargs):
         super(BaseApi, self).__init__(**kwargs)
         self.settings = settings
+        self.q = queue.Queue(maxsize=self.buffersize)
+        self.event = threading.Event()
 
     def play(self, audio_file_name="output_file.wav"):
         """
@@ -83,8 +91,8 @@ class BaseApi(ABC, EventDispatcher):
         Only override it, if you need a special playback.
         """
         # Placeholder implementation
-        src_path = str(Path(os.path.dirname(__file__)).parents[1])
-        tmp_path = os.path.join(src_path, 'tmp')
+        app_instance = App.get_running_app()
+        tmp_path = app_instance.global_settings.get_tmp_dir()
         if len(os.listdir(tmp_path)) == 0:
             logging.error("Directory is empty. Press generate first!")
         else:
@@ -93,11 +101,12 @@ class BaseApi(ABC, EventDispatcher):
             logging.info("Playing audio file %s",audio_path)
             logging.info("file exists %s",os.path.exists(audio_path))
             try:
-                data, fs = sf.read(audio_path)
-                sd.play(data, fs)
-                # don't call sd.wait() as we want the playback in the background.
+                t=threading.Thread(target=lambda: self.play_raw(audio_path))
+                t.start()
             except Exception as error:
                 logging.error("Could not play audio file: %s, reason: %s", audio_path,error)
+
+
 
     @abstractmethod
     def synthesize(self, input: str, file: str):
@@ -108,3 +117,43 @@ class BaseApi(ABC, EventDispatcher):
         If the API does not support audio synthesis, it should raise a NotImplementedError.
         """
         pass
+
+    def callback(self, outdata, frames, time, status):
+        assert frames == self.blocksize
+        if status.output_underflow:
+            print('Output underflow: increase blocksize?', file=sys.stderr)
+            raise sd.CallbackAbort
+        assert not status
+        try:
+            data = self.q.get_nowait()
+        except queue.Empty as e:
+            print('Buffer is empty: increase buffersize?', file=sys.stderr)
+            raise sd.CallbackAbort from e
+        if len(data) < len(outdata):
+            outdata[:len(data)] = data
+            outdata[len(data):] = b'\x00' * (len(outdata) - len(data))
+            raise sd.CallbackStop
+        else:
+            outdata[:] = data
+
+    def play_raw(self, filename):
+        self.q = queue.Queue(maxsize=self.buffersize)
+        try:
+            with sf.SoundFile(filename) as f:
+                for _ in range(self.buffersize):
+                    data = f.buffer_read(self.blocksize, dtype='float32')
+                    if not data:
+                        break
+                    self.q.put_nowait(data)  # Pre-fill queue
+                stream = sd.RawOutputStream(
+                    samplerate=f.samplerate, blocksize=self.blocksize,
+                    channels=f.channels, dtype='float32',
+                    callback=self.callback, finished_callback=self.event.set)
+                with stream:
+                    timeout = self.blocksize * self.buffersize / f.samplerate
+                    while data:
+                        data = f.buffer_read(self.blocksize, dtype='float32')
+                        self.q.put(data, timeout=timeout)
+                    self.event.wait()  # Wait until playback is finished
+        except Exception as e:
+            logging.error(type(e).__name__ + ': ' + str(e))
