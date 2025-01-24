@@ -14,7 +14,7 @@ keywords = ["speech-synthesis", "ML", "cerebral-pulsy"]
 
 [tool.poetry.dependencies]
 python = ">=3.9,<3.12"                          # Lower than 3.12 because of kivy compatibility (3.7 - 3.11)
-kivy = { version = "2.3.0", extras = ["base"] }
+kivy = { version = "2.3.0", extras = ["base, media"] }
 six = "^1.16.0"
 buildozer = "^1.5.0"
 pyinstaller = "6.7"
