@@ -1,12 +1,12 @@
-import re
 import requests
+import re
 import azure.cognitiveservices.speech as speechsdk
 import logging as log
 from kivy.uix.button import Button
 from kivy.uix.dropdown import DropDown
 from kivymd.uix.screen import MDScreen
 from kivy.app import App
-from kivy.properties import StringProperty, ListProperty, ObjectProperty, Clock
+from kivy.properties import StringProperty, ListProperty, ObjectProperty
 from ..base import BaseApi, BaseApiSettings
 
 
@@ -22,6 +22,7 @@ class MSAzureAPIWidget(MDScreen):
         super(MSAzureAPIWidget, self).__init__(**kwargs)
         self.title = title
         self.name = MSAzureAPI.__name__.lower() + "_settings"
+        self.voice_names = [f"{voice['display_name']}" for voice in MSAzureAPI.voices]
 
     def on_leave(self, *args):
         log.info("Leaving OpenAI settings screen.")
@@ -63,6 +64,7 @@ class MSAzureAPIWidget(MDScreen):
         except requests.exceptions.RequestException as e:
             print(f"Error while connecting to Azure Speech API: {e}")
             return False
+
 
 class CustomSpinner(Button):
     def __init__(self, options, **kwargs):
@@ -144,7 +146,6 @@ class MSAzureAPISettings(BaseApiSettings):
     def update_settings(self, instance, value):
         self.api_key_text = self.widget.api_key_input.text
         self.region_text = self.widget.region_input.text
-        self.voice_text = self.widget.voice_selection.text
 
         selected_voice = next(
             (v for v in MSAzureAPI.voices if v["display_name"] == self.widget.voice_selection.text),
@@ -166,6 +167,12 @@ class MSAzureAPI(BaseApi):
         "🔈": ("<prosody volume=\"silent\">", "</prosody>"),
         "🔉": ("<prosody volume=\"medium\">", "</prosody>"),
         "🔊": ("<prosody volume=\"loud\">", "</prosody>"),
+        "🐌": ("<prosody rate=\"slow\">", "</prosody>"),
+        "🚶": ("<prosody rate=\"medium\">", "</prosody>"),
+        "🏃": ("<prosody rate=\"fast\">", "</prosody>"),
+        "🗣️⬇️": ("<prosody pitch=\"low\">", "</prosody>"),
+        "🗣️⬆️": ("<prosody pitch=\"high\">", "</prosody>"),
+        "🗣️⏫": ("<prosody pitch=\"x-high\">", "</prosody>"),
         "🌏": ("<lang xml:lang=\"en-US\">", "</lang>")
     }
 
@@ -175,7 +182,6 @@ class MSAzureAPI(BaseApi):
 
     def init_api(self):
         self.settings.load_settings()
-        self.settings.widget.voice_names = self.get_available_voice_names()
 
     def reset_api(self):
         self.voices = []
@@ -206,21 +212,21 @@ class MSAzureAPI(BaseApi):
             pattern = r"(?<=-)[A-Z][a-z]+"
 
             # Convert voices to the desired format
-            self.voices = []
+            voices = []  # Initialisiere die Liste für die Stimmen
             for voice in voices_result.voices:
                 match = re.search(pattern, voice.short_name)
                 voice_name = match.group(0) if match else "Unknown"
 
                 display_name = f"{voice_name} ({voice.locale})"
 
-                self.voices.append({
+                voices.append({
                     "display_name": display_name,
                     "internal_name": voice.short_name,
                     "language": voice.locale,
                 })
 
             # Sort voices by language
-            self.voices.sort(key=lambda v: v["language"])
+            self.voices = sorted(voices, key=lambda v: v["language"])
 
             # Update mapping
             self.voice_mapping = {voice["display_name"]: voice["internal_name"] for voice in self.voices}
@@ -281,6 +287,7 @@ class MSAzureAPI(BaseApi):
             else:  # For self-closing tags
                 text = text.replace(emoji, open_tag)
         ssml_text += text + "</voice></speak>"
+        log.debug("converted ssml text: %s", ssml_text)
 
         return ssml_text
 
