@@ -14,6 +14,7 @@ class AmazonPollyAPIWidget(MDScreen):
     title = StringProperty("Amazon Polly API Settings")
     access_key_id_input = ObjectProperty(None)  # Field for access key ID input
     secret_access_key_input = ObjectProperty(None)  # Field for secret access key input
+    region_input = ObjectProperty(None)  # Field for region input
     voice_selection = ObjectProperty(None)  # Dropdown for selecting voices
     voice_names = ListProperty()
 
@@ -49,7 +50,7 @@ class AmazonPollyAPIWidget(MDScreen):
             session = boto3.session.Session(
                 aws_access_key_id=self.settings.access_key_id_text,
                 aws_secret_access_key=self.settings.secret_access_key_text,
-                region_name="eu-north-1"
+                region_name=self.settings.region_text
             )
 
             sts_client = session.client("sts")
@@ -83,6 +84,7 @@ class AmazonPollyAPISettings(BaseApiSettings):
     api_name = "AmazonPollyAPI"
     access_key_id_text = StringProperty("")
     secret_access_key_text = StringProperty("")
+    region_text = StringProperty("")
     voice_text = StringProperty("Vicky")
 
     @classmethod
@@ -101,10 +103,15 @@ class AmazonPollyAPISettings(BaseApiSettings):
         # Bind the text fields in the widget to settings (correct references)
         self.widget.access_key_id_input.bind(text=self.update_settings)
         self.bind(access_key_id_text=self.widget.access_key_id_input.setter('text'))
+
         self.widget.secret_access_key_input.bind(text=self.update_settings)
         self.bind(secret_access_key_text=self.widget.secret_access_key_input.setter('text'))
+
         self.widget.voice_selection.bind(text=self.update_settings)
         self.bind(voice_text=self.widget.voice_selection.setter('text'))
+
+        self.widget.region_input.bind(text=self.update_settings)
+        self.bind(region_text=self.widget.region_input.setter('text'))
 
         self.load_settings()
 
@@ -115,6 +122,8 @@ class AmazonPollyAPISettings(BaseApiSettings):
             self.api_name, "access_key_id_input", default="")
         self.secret_access_key_text = app_instance.global_settings.get_setting(
             self.api_name, "secret_access_key_input", default="")
+        self.region_text = app_instance.global_settings.get_setting(
+            self.api_name, "region", default="")
         self.voice_text = app_instance.global_settings.get_setting(
             self.api_name, "voice", default=""
         )
@@ -134,11 +143,14 @@ class AmazonPollyAPISettings(BaseApiSettings):
         app_instance.global_settings.update_setting(
             self.api_name, "secret_access_key_input", self.secret_access_key_text)
         app_instance.global_settings.update_setting(
+            self.api_name, "region", self.region_text)
+        app_instance.global_settings.update_setting(
             self.api_name, "voice", self.voice_text)
 
     def update_settings(self, instance, value):
         self.access_key_id_text = self.widget.access_key_id_input.text
         self.secret_access_key_text = self.widget.secret_access_key_input.text
+        self.region_text = self.widget.region_input.text
 
         selected_voice = next(
             (v for v in AmazonPollyAPI.voices if v["display_name"] == self.widget.voice_selection.text),
@@ -196,12 +208,13 @@ class AmazonPollyAPI(BaseApi):
         # Access the TextInput fields from the settings widget
         access_key_id_input = self.settings.widget.ids.access_key_id_input.text
         secret_access_key_input = self.settings.widget.ids.secret_access_key_input.text
+        region_input = self.settings.widget.ids.region_input.text
 
         # Initialize a boto3 session with the provided credentials
         self.session = boto3.session.Session(
             aws_access_key_id=access_key_id_input,
             aws_secret_access_key=secret_access_key_input,
-            region_name="eu-north-1"
+            region_name=region_input
         )
 
         # Create the Polly client from the session
