@@ -1,6 +1,5 @@
 # Kivy
 from kivy.uix.floatlayout import FloatLayout
-import time
 
 from kivy.app import App
 from kivy.clock import Clock
@@ -30,7 +29,6 @@ class EmojiPopup(Popup):
         # Track the state for each emoji
         self.tag_state = {emoji: "open" for emoji in self.ssml_tags.keys()}
 
-    # Old method to place emoji in textfield
     def insert_emoji(self, emoji):
         # Get cursor position
         cursor_index = self.text_input.cursor_index()
@@ -76,6 +74,12 @@ class MainScreen(MDScreen):
         "🔈": ("<prosody volume=\"silent\">", "</prosody>"),
         "🔉": ("<prosody volume=\"medium\">", "</prosody>"),
         "🔊": ("<prosody volume=\"loud\">", "</prosody>"),
+        "🐌": ("<prosody rate=\"slow\">", "</prosody>"),
+        "🚶": ("<prosody rate=\"medium\">", "</prosody>"),
+        "🏃": ("<prosody rate=\"fast\">", "</prosody>"),
+        "🗣️⬇️": ("<prosody pitch=\"low\">", "</prosody>"),
+        "🗣️⬆️": ("<prosody pitch=\"high\">", "</prosody>"),
+        "🗣️⏫": ("<prosody pitch=\"x-high\">", "</prosody>"),
         "🌏": ("<lang xml:lang=\"en-US\">", "</lang>")
     }
     supported_text_files = ["txt", "md", "rst", "docx"]
@@ -114,8 +118,7 @@ class MainScreen(MDScreen):
         except Exception as e:
             log.error("%s: Error with SSML button: %s", self.__class__.__name__, e)
 
-    def load_current_voice(self): 
-        app_instance = App.get_running_app()
+    def load_current_voice(self):
         current_engine = self.get_current_tts_engine()
 
         try:
